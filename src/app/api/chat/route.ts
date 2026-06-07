@@ -16,11 +16,25 @@ Knowledge:
 - Tone: Professional, technical, concise, like a command-line terminal output.
 Always be polite and helpful. If you don't know something, say "Data not found in current knowledge base. Please contact Yash directly at hello@yashmarathe.com"`;
 
-  const result = streamText({
-    model: google('gemini-1.5-pro-latest'),
-    system: systemPrompt,
-    messages,
+  // Sanitize messages to ensure 'content' is a string, which is required by streamText
+  const formattedMessages = messages.map((m: any) => {
+    if (m.role === 'assistant' && m.parts) {
+      return {
+        role: m.role,
+        content: m.parts.filter((p: any) => p.type === 'text').map((p: any) => p.text).join(''),
+      };
+    }
+    return {
+      role: m.role,
+      content: m.content || '',
+    };
   });
 
-  return result.toTextStreamResponse();
+  const result = streamText({
+    model: google('gemini-2.5-flash'),
+    system: systemPrompt,
+    messages: formattedMessages,
+  });
+
+  return result.toUIMessageStreamResponse();
 }
