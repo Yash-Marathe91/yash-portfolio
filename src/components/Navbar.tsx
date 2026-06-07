@@ -99,9 +99,11 @@ export default function Navbar() {
 
         {/* Admin Button - Right */}
         <div className="flex-1 flex justify-end">
-          <span className="border border-on-surface px-4 py-1.5 text-sm bg-surface-elevated hover:bg-surface-elevated/80 transition-colors cursor-pointer font-mono font-medium whitespace-nowrap">
-            ADMIN
-          </span>
+          <Link href="/system-auth">
+            <span className="border border-on-surface px-4 py-1.5 text-sm bg-surface-elevated hover:bg-surface-elevated/80 transition-colors cursor-pointer font-mono font-medium whitespace-nowrap">
+              ADMIN
+            </span>
+          </Link>
         </div>
       </div>
     </nav>

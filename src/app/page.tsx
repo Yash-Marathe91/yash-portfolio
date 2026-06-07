@@ -8,6 +8,7 @@ import Reveal from '@/components/Reveal';
 import TrueFocus from '@/components/TrueFocus';
 import GlitchText from '@/components/GlitchText';
 import { Code, ArrowRight, Terminal } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -42,12 +43,18 @@ export default function Home() {
             Currently engineering AI-driven solutions and contributing to high-impact open source projects.
           </p>
           <div className="mt-12 flex gap-6 font-mono text-technical-code">
-            <button className="magnetic group flex items-center gap-2 bg-primary-container text-on-primary-container px-8 py-4 uppercase hover:bg-primary transition-colors">
+            <Link 
+              href="#projects"
+              className="magnetic group flex items-center gap-2 bg-primary-container text-on-primary-container px-8 py-4 uppercase hover:bg-primary transition-colors"
+            >
               View Projects <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button className="magnetic flex items-center gap-2 border border-border-glass text-on-surface px-8 py-4 uppercase hover:bg-surface-elevated transition-colors">
+            </Link>
+            <Link 
+              href="#contact"
+              className="magnetic flex items-center gap-2 border border-border-glass text-on-surface px-8 py-4 uppercase hover:bg-surface-elevated transition-colors"
+            >
               <Terminal className="w-4 h-4" /> Initialize Contact
-            </button>
+            </Link>
           </div>
         </div>
       </section>
