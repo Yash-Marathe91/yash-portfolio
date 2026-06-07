@@ -16,7 +16,7 @@ export default function AiAssistant() {
     e.preventDefault();
     if (!input.trim()) return;
     
-    sendMessage({ role: 'user', content: input });
+    sendMessage({ role: 'user', parts: [{ type: 'text', text: input }] });
     setInput('');
   };
   
@@ -76,7 +76,7 @@ export default function AiAssistant() {
             </div>
             
             {messages.map((m) => {
-              const textContent = m.content || (m.parts?.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('') || '');
+              const textContent = (m as any).content || (m.parts?.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('') || '');
               return (
                 <div key={m.id} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
                   <div className={`max-w-[85%] px-3 py-2 flex ${m.role === 'user' ? 'bg-surface-elevated text-on-surface rounded-l-xl rounded-tr-xl' : 'text-on-surface-variant'}`}>
@@ -95,7 +95,7 @@ export default function AiAssistant() {
                               <code className="bg-surface-elevated text-primary px-1.5 py-0.5 rounded text-sm" {...props}>{children}</code>
                             );
                           },
-                          pre: ({node, ...props}) => <div {...props} />,
+                          pre: ({node, ...props}) => <div {...(props as any)} />,
                           ul: ({node, ...props}) => <ul className="list-disc pl-4 my-2 flex flex-col gap-1" {...props} />,
                           ol: ({node, ...props}) => <ol className="list-decimal pl-4 my-2 flex flex-col gap-1" {...props} />,
                           li: ({node, ...props}) => <li className="pl-1" {...props} />,

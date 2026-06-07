@@ -1,27 +1,10 @@
 import type { Metadata } from "next";
-import { Anton, Geist, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
 import { CommandPalette } from "@/components/CommandPalette";
 import AiAssistant from "@/components/AiAssistant";
 import Navbar from "@/components/Navbar";
-
-const anton = Anton({
-  weight: "400",
-  variable: "--font-heading",
-  subsets: ["latin"],
-});
-
-const geist = Geist({
-  variable: "--font-sans",
-  subsets: ["latin"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: 'Yash Marathe | AI Systems Engineer & Full Stack Developer',
@@ -58,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${anton.variable} ${geist.variable} ${jetbrainsMono.variable} dark antialiased`}
+      className="dark antialiased"
     >
       <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-primary-container">
         <SmoothScroll>
