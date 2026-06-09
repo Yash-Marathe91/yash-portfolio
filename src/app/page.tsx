@@ -4,7 +4,7 @@ import ContactForm from '@/components/ContactForm';
 import Reveal from '@/components/Reveal';
 import TrueFocus from '@/components/TrueFocus';
 import GlitchText from '@/components/GlitchText';
-import { ArrowRight, Terminal } from 'lucide-react';
+import { ArrowRight, Terminal, Github, Linkedin, Twitter } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 
@@ -116,6 +116,25 @@ export default async function Home() {
               </Link>
             )}
           </div>
+          
+          {/* Social Links */}
+          <div className="mt-8 flex items-center gap-6">
+            {profile?.github_url && (
+              <a href={profile.github_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2 -ml-2" aria-label="GitHub">
+                <Github className="w-6 h-6" />
+              </a>
+            )}
+            {profile?.linkedin_url && (
+              <a href={profile.linkedin_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="LinkedIn">
+                <Linkedin className="w-6 h-6" />
+              </a>
+            )}
+            {profile?.twitter_url && (
+              <a href={profile.twitter_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Twitter">
+                <Twitter className="w-6 h-6" />
+              </a>
+            )}
+          </div>
         </div>
       </section>
 
@@ -208,7 +227,25 @@ export default async function Home() {
         <div className="text-technical-code text-on-surface-variant">
           © {new Date().getFullYear()} {fullName}. All rights reserved.
         </div>
-        <div className="flex gap-6 text-technical-label">
+        <div className="flex flex-col md:flex-row items-center gap-6 text-technical-label">
+          <div className="flex gap-4">
+            {profile?.github_url && (
+              <a href={profile.github_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors">
+                <Github className="w-5 h-5" />
+              </a>
+            )}
+            {profile?.linkedin_url && (
+              <a href={profile.linkedin_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors">
+                <Linkedin className="w-5 h-5" />
+              </a>
+            )}
+            {profile?.twitter_url && (
+              <a href={profile.twitter_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors">
+                <Twitter className="w-5 h-5" />
+              </a>
+            )}
+          </div>
+          <div className="hidden md:block w-px h-6 bg-border-glass"></div>
           <p className="text-primary-container">Press Ctrl + K for Command Palette</p>
         </div>
       </footer>
