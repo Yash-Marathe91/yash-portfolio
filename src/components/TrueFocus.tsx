@@ -106,7 +106,7 @@ const TrueFocus = ({
       })}
 
       <motion.div
-        className="focus-frame"
+        className="focus-frame hidden md:block"
         animate={{
           x: focusRect.x,
           y: focusRect.y,

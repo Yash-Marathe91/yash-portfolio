@@ -51,7 +51,7 @@ export default function SystemAuthPage() {
   return (
     <main className="min-h-screen bg-background flex flex-col items-center justify-center p-4 relative overflow-hidden font-mono text-foreground">
       {/* Background Noise Texture */}
-      <div className="fixed inset-0 z-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+      <div className="fixed inset-0 z-0 opacity-[0.03] pointer-events-none bg-[url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;)]"></div>
 
       {/* Decorative lines */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border-glass to-transparent opacity-50"></div>
@@ -110,6 +110,7 @@ export default function SystemAuthPage() {
               <input
                 type="email"
                 required
+                autoComplete="username"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-surface border border-border-glass pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-primary-container transition-colors placeholder:text-on-surface-variant/30"
@@ -125,6 +126,7 @@ export default function SystemAuthPage() {
               <input
                 type="password"
                 required
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-surface border border-border-glass pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-primary-container transition-colors placeholder:text-on-surface-variant/30"

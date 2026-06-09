@@ -32,26 +32,47 @@
   animation: animate-glitch var(--before-duration, 2s) infinite linear alternate-reverse;
 }
 
-.glitch.enable-on-hover::after,
-.glitch.enable-on-hover::before {
-  content: '';
-  opacity: 0;
-  animation: none;
+/* Mobile view (auto-glitch, ignore hover requirement) */
+@media (max-width: 768px) {
+  .glitch.enable-on-hover::after {
+    content: attr(data-text);
+    opacity: 1;
+    left: 5px;
+    text-shadow: var(--after-shadow, -5px 0 red);
+    animation: animate-glitch var(--after-duration, 3s) infinite linear alternate-reverse;
+  }
+  .glitch.enable-on-hover::before {
+    content: attr(data-text);
+    opacity: 1;
+    left: -5px;
+    text-shadow: var(--before-shadow, 5px 0 cyan);
+    animation: animate-glitch var(--before-duration, 2s) infinite linear alternate-reverse;
+  }
 }
 
-.glitch.enable-on-hover:hover::after {
-  content: attr(data-text);
-  opacity: 1;
-  left: 5px;
-  text-shadow: var(--after-shadow, -5px 0 red);
-  animation: animate-glitch var(--after-duration, 3s) infinite linear alternate-reverse;
-}
-.glitch.enable-on-hover:hover::before {
-  content: attr(data-text);
-  opacity: 1;
-  left: -5px;
-  text-shadow: var(--before-shadow, 5px 0 cyan);
-  animation: animate-glitch var(--before-duration, 2s) infinite linear alternate-reverse;
+/* Desktop view (only glitch on hover) */
+@media (min-width: 769px) {
+  .glitch.enable-on-hover::after,
+  .glitch.enable-on-hover::before {
+    content: '';
+    opacity: 0;
+    animation: none;
+  }
+
+  .glitch.enable-on-hover:hover::after {
+    content: attr(data-text);
+    opacity: 1;
+    left: 5px;
+    text-shadow: var(--after-shadow, -5px 0 red);
+    animation: animate-glitch var(--after-duration, 3s) infinite linear alternate-reverse;
+  }
+  .glitch.enable-on-hover:hover::before {
+    content: attr(data-text);
+    opacity: 1;
+    left: -5px;
+    text-shadow: var(--before-shadow, 5px 0 cyan);
+    animation: animate-glitch var(--before-duration, 2s) infinite linear alternate-reverse;
+  }
 }
 
 @keyframes animate-glitch {
