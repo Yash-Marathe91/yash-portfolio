@@ -4,21 +4,31 @@ import { createClient } from '@supabase/supabase-js';
 
 export async function POST(req: Request) {
   try {
-    const { name, email, message } = await req.json();
+    const rawData = await req.json();
+    
+    // Basic XSS Sanitization
+    const sanitize = (str: string) => 
+      str?.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[tag] || tag)) || '';
+
+    const name = sanitize(rawData.name);
+    const email = sanitize(rawData.email);
+    const message = sanitize(rawData.message);
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     // Initialize Supabase if keys exist
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_ANON_KEY;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     
     if (supabaseUrl && supabaseKey) {
       const supabase = createClient(supabaseUrl, supabaseKey);
       const { error: dbError } = await supabase
         .from('contact_messages')
-        .insert([{ name, email, message }]);
+        .insert([{ sender_name: name, sender_email: email, subject: 'New Contact Request', message }]);
         
       if (dbError) {
         console.error('Supabase error:', dbError);
