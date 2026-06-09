@@ -3,16 +3,16 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, FolderKanban, Award, GraduationCap, LineChart, Settings, LogOut, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, UserCircle, Database, FolderKanban, Award, Inbox, LogOut, ShieldAlert } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 const sidebarItems = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Profile & Resume', href: '/admin/profile', icon: UserCircle },
+  { name: 'Skills', href: '/admin/skills', icon: Database },
   { name: 'Projects', href: '/admin/projects', icon: FolderKanban },
   { name: 'Achievements', href: '/admin/achievements', icon: Award },
-  { name: 'Certifications', href: '/admin/certifications', icon: GraduationCap },
-  { name: 'Analytics', href: '/admin/analytics', icon: LineChart },
-  { name: 'Settings', href: '/admin/settings', icon: Settings },
+  { name: 'Inbox', href: '/admin/inbox', icon: Inbox },
 ];
 
 export default function AdminLayout({
