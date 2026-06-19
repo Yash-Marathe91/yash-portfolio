@@ -15,15 +15,25 @@ async function getRepoData(repo: string) {
 }
 
 export default async function ProjectCard({ project }: { project: Project }) {
-  const repoData = await getRepoData(project.github);
+  // Extract owner/repo path for GitHub API
+  const repoPath = project.github?.replace(/^https?:\/\/(www\.)?github\.com\//, '').replace(/\/$/, '') || '';
+  
+  // Create correct hyperlink URL
+  const githubUrl = project.github?.startsWith('http') 
+    ? project.github 
+    : (project.github ? `https://github.com/${project.github}` : '#');
+
+  const repoData = await getRepoData(repoPath);
   
   return (
     <div className="group relative bg-surface-elevated border border-border-glass p-8 flex flex-col hover:border-outline transition-colors h-full">
       <div className="flex justify-between items-start mb-6">
         <h3 className="text-3xl font-heading uppercase text-foreground">{project.title}</h3>
-        <a href={`https://github.com/${project.github}`} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors">
-          <Code className="w-6 h-6" />
-        </a>
+        {project.github && (
+          <a href={githubUrl} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors">
+            <Code className="w-6 h-6" />
+          </a>
+        )}
       </div>
       
       <p className="text-body-md text-on-surface-variant mb-6 flex-grow">
