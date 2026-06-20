@@ -4,6 +4,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
 import { CommandPalette } from "@/components/CommandPalette";
 import AiAssistant from "@/components/AiAssistant";
+import SudoTerminal from "@/components/SudoTerminal";
 import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
@@ -49,6 +50,7 @@ export default function RootLayout({
           <CustomCursor />
           <CommandPalette />
           <AiAssistant />
+          <SudoTerminal />
           {children}
         </SmoothScroll>
       </body>
