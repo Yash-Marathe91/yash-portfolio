@@ -4,12 +4,22 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal as TerminalIcon, X } from 'lucide-react';
 
+const vfs: Record<string, string> = {
+  'resume.txt': 'ACCESS DENIED. Please use the highly secure graphical interface (Download Button).',
+  'about.md': '# Yash Marathe\n> AI Systems Engineer & Full Stack Developer\n> Building intelligent systems, scalable architectures, and next-gen robotics.',
+  'contact.json': '{\n  "email": "hello@yashmarathe.com",\n  "status": "Available for new connections",\n  "location": "Earth"\n}',
+  'secrets.log': '[192.168.1.1] - Unauthorized login attempt blocked.\n[10.0.0.5] - Quantum core stabilized.\n[127.0.0.1] - Coffee machine API unreachable.',
+};
+
 export default function SudoTerminal() {
   const [isOpen, setIsOpen] = useState(false);
   const [inputBuffer, setInputBuffer] = useState('');
   const [logs, setLogs] = useState<string[]>([]);
   const [isBooting, setIsBooting] = useState(false);
   const [cmdInput, setCmdInput] = useState('');
+  const [themeColor, setThemeColor] = useState('#00ff00');
+  const [pwd, setPwd] = useState('/root/yash');
+  
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -45,6 +55,7 @@ export default function SudoTerminal() {
   const startBootSequence = () => {
     setLogs([]);
     setIsBooting(true);
+    setThemeColor('#00ff00'); // Reset to default green
     const sequence = [
       "INIT: Booting Quantum Core...",
       "SYSTEM: Bypassing standard security protocols...",
@@ -61,7 +72,7 @@ export default function SudoTerminal() {
         if (i === sequence.length - 1) {
           setIsBooting(false);
         }
-      }, i * 500 + Math.random() * 200);
+      }, i * 400 + Math.random() * 150);
     });
   };
 
@@ -69,20 +80,83 @@ export default function SudoTerminal() {
     e.preventDefault();
     if (!cmdInput.trim()) return;
 
-    const cmd = cmdInput.trim().toLowerCase();
-    const newLogs = [...logs, `root@yash:~# ${cmdInput}`];
+    const fullCmd = cmdInput.trim();
+    const args = fullCmd.split(' ').filter(Boolean);
+    const cmd = args[0].toLowerCase();
+    
+    const newLogs = [...logs, `guest@terminal:${pwd}$ ${fullCmd}`];
 
     switch (cmd) {
       case 'help':
         newLogs.push(
           "Available Commands:",
-          "  help     - Show this message",
+          "  ls / dir - List directory contents",
+          "  cat      - View file contents (e.g. 'cat resume.txt')",
+          "  pwd      - Print working directory",
+          "  date     - Show current system time",
+          "  echo     - Print text to terminal",
+          "  theme    - Change terminal color (green, amber, blue, white, matrix)",
           "  whoami   - Display current user identity",
           "  projects - List classified projects",
           "  skills   - Display neural network capabilities",
+          "  github   - Open GitHub profile",
           "  clear    - Clear terminal output",
           "  exit     - Terminate connection"
         );
+        break;
+      case 'ls':
+      case 'dir':
+        newLogs.push(Object.keys(vfs).join('   '));
+        break;
+      case 'cat':
+        if (args.length < 2) {
+          newLogs.push("cat: missing file operand");
+        } else {
+          const fileName = args[1];
+          if (vfs[fileName]) {
+            newLogs.push(...vfs[fileName].split('\n'));
+          } else {
+            newLogs.push(`cat: ${fileName}: No such file or directory`);
+          }
+        }
+        break;
+      case 'pwd':
+        newLogs.push(pwd);
+        break;
+      case 'cd':
+        if (args.length < 2 || args[1] === '~') setPwd('/root/yash');
+        else if (args[1] === '..') setPwd('/root');
+        else newLogs.push(`cd: ${args[1]}: Not a directory`);
+        break;
+      case 'date':
+        newLogs.push(new Date().toString());
+        break;
+      case 'echo':
+        newLogs.push(args.slice(1).join(' '));
+        break;
+      case 'theme':
+        if (args.length < 2) {
+          newLogs.push("Usage: theme [green|amber|blue|white|matrix]");
+        } else {
+          const color = args[1].toLowerCase();
+          const colors: Record<string, string> = {
+            green: '#00ff00',
+            amber: '#ffb000',
+            blue: '#00ccff',
+            white: '#ffffff',
+            matrix: '#03A062'
+          };
+          if (colors[color]) {
+            setThemeColor(colors[color]);
+            newLogs.push(`Theme updated to ${color}.`);
+          } else {
+            newLogs.push(`theme: invalid color '${color}'`);
+          }
+        }
+        break;
+      case 'github':
+        newLogs.push("Opening secure connection to GitHub...");
+        window.open('https://github.com/Yash-Marathe91', '_blank');
         break;
       case 'whoami':
         newLogs.push("Identity: Guest Visitor");
@@ -110,11 +184,10 @@ export default function SudoTerminal() {
         setCmdInput('');
         return;
       case 'sudo':
-        newLogs.push("Nice try. You already have root access.");
+        newLogs.push("yash is not in the sudoers file. This incident will be reported.");
         break;
       default:
-        newLogs.push(`Command not found: ${cmd}`);
-        newLogs.push("Type 'help' to see available commands.");
+        newLogs.push(`bash: ${cmd}: command not found`);
     }
 
     setLogs(newLogs);
@@ -128,50 +201,57 @@ export default function SudoTerminal() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 1.05 }}
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-12"
+          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 sm:p-12"
           onClick={() => inputRef.current?.focus()}
         >
-          <div className="w-full max-w-4xl h-full max-h-[600px] bg-black border border-[#00ff00]/30 shadow-[0_0_40px_rgba(0,255,0,0.15)] flex flex-col font-mono relative overflow-hidden" onClick={e => e.stopPropagation()}>
+          <div 
+            className="w-full max-w-4xl h-full max-h-[600px] bg-black border shadow-2xl flex flex-col font-mono relative overflow-hidden transition-colors duration-500"
+            style={{ borderColor: `${themeColor}40`, boxShadow: `0 0 40px ${themeColor}20` }}
+            onClick={e => e.stopPropagation()}
+          >
             {/* Scanline Effect */}
-            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.25)_51%)] bg-[length:100%_4px] opacity-20 z-0" />
+            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.25)_51%)] bg-[length:100%_4px] opacity-30 z-0" />
             
             {/* Header */}
-            <div className="h-10 border-b border-[#00ff00]/30 flex items-center justify-between px-4 bg-[#00ff00]/5 z-10">
-              <div className="flex items-center gap-2 text-[#00ff00] text-xs uppercase tracking-widest font-bold">
+            <div className="h-10 border-b flex items-center justify-between px-4 z-10 transition-colors duration-500" style={{ borderColor: `${themeColor}40`, backgroundColor: `${themeColor}10` }}>
+              <div className="flex items-center gap-2 text-xs uppercase tracking-widest font-bold transition-colors duration-500" style={{ color: themeColor }}>
                 <TerminalIcon className="w-4 h-4" />
-                ROOT SHELL OVERRIDE
+                BASH // {pwd}
               </div>
-              <button onClick={() => setIsOpen(false)} className="text-[#00ff00] hover:text-white transition-colors">
+              <button onClick={() => setIsOpen(false)} className="hover:text-white transition-colors" style={{ color: themeColor }}>
                 <X className="w-5 h-5" />
               </button>
             </div>
             
             {/* Terminal Body */}
-            <div className="flex-1 p-6 overflow-y-auto text-[#00ff00] text-sm sm:text-base leading-relaxed z-10 font-bold tracking-wide shadow-[inset_0_0_20px_rgba(0,255,0,0.05)] scroll-smooth">
-              
+            <div 
+              className="flex-1 p-6 overflow-y-auto text-sm sm:text-base leading-relaxed z-10 font-bold tracking-wide scroll-smooth transition-colors duration-500"
+              style={{ color: themeColor, textShadow: `0 0 8px ${themeColor}40`, boxShadow: `inset 0 0 30px ${themeColor}10` }}
+            >
               {logs.map((log, i) => (
-                <div key={i} className="mb-2 flex items-start gap-3">
-                  {!log.startsWith('root@yash') && !log.startsWith('Available') && !log.startsWith('  ') && !log.startsWith('-') && (
+                <div key={i} className="mb-1.5 flex items-start gap-3">
+                  {!log.startsWith('guest@terminal') && !log.startsWith('Available') && !log.startsWith('  ') && !log.startsWith('-') && !log.startsWith('INIT') && !log.startsWith('SYSTEM') && !log.startsWith('ROOT') && !log.startsWith('Loading') && !log.startsWith('Fetching') && !log.startsWith('Connection') && !log.startsWith('Type') && (
                     <span className="opacity-70 whitespace-nowrap hidden sm:inline">&gt;</span>
                   )}
-                  <span className={`whitespace-pre-wrap ${log.includes('GRANTED') ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]' : ''}`}>{log}</span>
+                  <span className={`whitespace-pre-wrap ${log.includes('GRANTED') ? 'text-white drop-shadow-md' : ''}`}>{log}</span>
                 </div>
               ))}
               
               {isBooting ? (
                 <div className="mt-4 flex items-center gap-3">
-                  <span className="opacity-70">root@yash:~#</span>
-                  <span className="animate-pulse w-2.5 h-5 bg-[#00ff00] inline-block shadow-[0_0_8px_#00ff00]"></span>
+                  <span className="opacity-70">guest@terminal:{pwd}$</span>
+                  <span className="animate-pulse w-2.5 h-5 inline-block" style={{ backgroundColor: themeColor, boxShadow: `0 0 8px ${themeColor}` }}></span>
                 </div>
               ) : (
-                <form onSubmit={handleCommandSubmit} className="mt-4 flex items-center gap-3">
-                  <span className="opacity-70 whitespace-nowrap">root@yash:~#</span>
+                <form onSubmit={handleCommandSubmit} className="mt-2 flex items-center gap-3">
+                  <span className="opacity-70 whitespace-nowrap">guest@terminal:{pwd}$</span>
                   <input
                     ref={inputRef}
                     type="text"
                     value={cmdInput}
                     onChange={e => setCmdInput(e.target.value)}
-                    className="flex-1 bg-transparent border-none outline-none text-[#00ff00] font-mono p-0 focus:ring-0 w-full"
+                    className="flex-1 bg-transparent border-none outline-none font-mono p-0 focus:ring-0 w-full transition-colors duration-500"
+                    style={{ color: themeColor }}
                     autoFocus
                     autoComplete="off"
                     spellCheck="false"
