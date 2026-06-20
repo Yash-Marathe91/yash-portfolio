@@ -3,9 +3,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal as TerminalIcon, X } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 const vfs: Record<string, string> = {
-  'resume.txt': 'ACCESS DENIED. Please use the highly secure graphical interface (Download Button).',
+  'resume.pdf': '[BINARY FILE] - Use "cat resume.pdf" to open securely.',
   'about.md': '# Yash Marathe\n> AI Systems Engineer & Full Stack Developer\n> Building intelligent systems, scalable architectures, and next-gen robotics.',
   'contact.json': '{\n  "email": "hello@yashmarathe.com",\n  "status": "Available for new connections",\n  "location": "Earth"\n}',
   'secrets.log': '[192.168.1.1] - Unauthorized login attempt blocked.\n[10.0.0.5] - Quantum core stabilized.\n[127.0.0.1] - Coffee machine API unreachable.',
@@ -16,6 +17,7 @@ export default function SudoTerminal() {
   const [inputBuffer, setInputBuffer] = useState('');
   const [logs, setLogs] = useState<string[]>([]);
   const [isBooting, setIsBooting] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [cmdInput, setCmdInput] = useState('');
   const [themeColor, setThemeColor] = useState('#00ff00');
   const [pwd, setPwd] = useState('/root/yash');
@@ -43,10 +45,10 @@ export default function SudoTerminal() {
   }, [inputBuffer, isOpen]);
 
   useEffect(() => {
-    if (isOpen && !isBooting) {
+    if (isOpen && !isBooting && !isProcessing) {
       inputRef.current?.focus();
     }
-  }, [isOpen, isBooting, logs]);
+  }, [isOpen, isBooting, isProcessing, logs]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'auto' });
@@ -76,22 +78,25 @@ export default function SudoTerminal() {
     });
   };
 
-  const handleCommandSubmit = (e: React.FormEvent) => {
+  const handleCommandSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!cmdInput.trim()) return;
+    if (!cmdInput.trim() || isProcessing) return;
 
     const fullCmd = cmdInput.trim();
     const args = fullCmd.split(' ').filter(Boolean);
     const cmd = args[0].toLowerCase();
     
-    const newLogs = [...logs, `guest@terminal:${pwd}$ ${fullCmd}`];
+    setCmdInput('');
+    setLogs(prev => [...prev, `guest@terminal:${pwd}$ ${fullCmd}`]);
+
+    let output: string[] = [];
 
     switch (cmd) {
       case 'help':
-        newLogs.push(
+        output = [
           "Available Commands:",
           "  ls / dir - List directory contents",
-          "  cat      - View file contents (e.g. 'cat resume.txt')",
+          "  cat      - View file contents (e.g. 'cat resume.pdf')",
           "  pwd      - Print working directory",
           "  date     - Show current system time",
           "  echo     - Print text to terminal",
@@ -102,41 +107,53 @@ export default function SudoTerminal() {
           "  github   - Open GitHub profile",
           "  clear    - Clear terminal output",
           "  exit     - Terminate connection"
-        );
+        ];
         break;
       case 'ls':
       case 'dir':
-        newLogs.push(Object.keys(vfs).join('   '));
+        output = [Object.keys(vfs).join('   ')];
         break;
       case 'cat':
         if (args.length < 2) {
-          newLogs.push("cat: missing file operand");
+          output = ["cat: missing file operand"];
         } else {
           const fileName = args[1];
-          if (vfs[fileName]) {
-            newLogs.push(...vfs[fileName].split('\n'));
+          if (fileName === 'resume.pdf') {
+            setIsProcessing(true);
+            setLogs(prev => [...prev, "Decrypting and downloading resume.pdf..."]);
+            const supabase = createClient();
+            const { data } = await supabase.from('profile_settings').select('resume_file_url').single();
+            if (data?.resume_file_url) {
+              window.open(data.resume_file_url, '_blank');
+              output = ["Resume successfully opened in secure viewer."];
+            } else {
+              output = ["cat: resume.pdf: File is corrupted or not uploaded yet."];
+            }
+            setIsProcessing(false);
+          } else if (vfs[fileName]) {
+            output = vfs[fileName].split('\n');
           } else {
-            newLogs.push(`cat: ${fileName}: No such file or directory`);
+            output = [`cat: ${fileName}: No such file or directory`];
           }
         }
         break;
       case 'pwd':
-        newLogs.push(pwd);
+        output = [pwd];
         break;
       case 'cd':
         if (args.length < 2 || args[1] === '~') setPwd('/root/yash');
         else if (args[1] === '..') setPwd('/root');
-        else newLogs.push(`cd: ${args[1]}: Not a directory`);
+        else output = [`cd: ${args[1]}: Not a directory`];
         break;
       case 'date':
-        newLogs.push(new Date().toString());
+        output = [new Date().toString()];
         break;
       case 'echo':
-        newLogs.push(args.slice(1).join(' '));
+        output = [args.slice(1).join(' ')];
         break;
       case 'theme':
         if (args.length < 2) {
-          newLogs.push("Usage: theme [green|amber|blue|white|matrix]");
+          output = ["Usage: theme [green|amber|blue|white|matrix]"];
         } else {
           const color = args[1].toLowerCase();
           const colors: Record<string, string> = {
@@ -148,50 +165,55 @@ export default function SudoTerminal() {
           };
           if (colors[color]) {
             setThemeColor(colors[color]);
-            newLogs.push(`Theme updated to ${color}.`);
+            output = [`Theme updated to ${color}.`];
           } else {
-            newLogs.push(`theme: invalid color '${color}'`);
+            output = [`theme: invalid color '${color}'`];
           }
         }
         break;
       case 'github':
-        newLogs.push("Opening secure connection to GitHub...");
+        output = ["Opening secure connection to GitHub..."];
         window.open('https://github.com/Yash-Marathe91', '_blank');
         break;
       case 'whoami':
-        newLogs.push("Identity: Guest Visitor");
-        newLogs.push("Access Level: Restricted (Read-Only)");
+        output = [
+          "Identity: Guest Visitor",
+          "Access Level: Restricted (Read-Only)"
+        ];
         break;
       case 'projects':
-        newLogs.push("Loading projects...");
-        newLogs.push("- Construction ERP System [SECURE]");
-        newLogs.push("- LocalHost AI [ACTIVE]");
-        newLogs.push("- Campus Connect for AI Core [ACTIVE]");
+        output = [
+          "Loading projects...",
+          "- Construction ERP System [SECURE]",
+          "- LocalHost AI [ACTIVE]",
+          "- Campus Connect for AI Core [ACTIVE]"
+        ];
         break;
       case 'skills':
-        newLogs.push("Core Directives:");
-        newLogs.push("- Frontend: React 19, Next.js 15, TailwindCSS");
-        newLogs.push("- Backend: Node.js, Supabase, PostgreSQL");
-        newLogs.push("- AI: Vercel AI SDK, Gemini API");
-        newLogs.push("- Systems: C++, Python, IoT, WebGL");
+        output = [
+          "Core Directives:",
+          "- Frontend: React 19, Next.js 15, TailwindCSS",
+          "- Backend: Node.js, Supabase, PostgreSQL",
+          "- AI: Vercel AI SDK, Gemini API",
+          "- Systems: C++, Python, IoT, WebGL"
+        ];
         break;
       case 'clear':
         setLogs([]);
-        setCmdInput('');
         return;
       case 'exit':
         setIsOpen(false);
-        setCmdInput('');
         return;
       case 'sudo':
-        newLogs.push("yash is not in the sudoers file. This incident will be reported.");
+        output = ["yash is not in the sudoers file. This incident will be reported."];
         break;
       default:
-        newLogs.push(`bash: ${cmd}: command not found`);
+        output = [`bash: ${cmd}: command not found`];
     }
 
-    setLogs(newLogs);
-    setCmdInput('');
+    if (output.length > 0) {
+      setLogs(prev => [...prev, ...output]);
+    }
   };
 
   return (
