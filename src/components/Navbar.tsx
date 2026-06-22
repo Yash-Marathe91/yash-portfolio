@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import SystemStatusBadge from './SystemStatusBadge';
 
 const navItems = [
   { name: 'HOME', href: '#home' },
@@ -101,8 +102,9 @@ export default function Navbar() {
           })}
         </div>
 
-        {/* Admin Button - Desktop Right */}
-        <div className="hidden lg:flex flex-1 justify-end">
+        {/* Admin & Badge - Desktop Right */}
+        <div className="hidden lg:flex flex-1 justify-end items-center gap-4">
+          <SystemStatusBadge />
           <Link href="/system-auth">
             <span className="border border-on-surface px-4 py-1.5 text-sm bg-surface-elevated hover:bg-surface-elevated/80 transition-colors cursor-pointer font-mono font-medium whitespace-nowrap">
               ADMIN
