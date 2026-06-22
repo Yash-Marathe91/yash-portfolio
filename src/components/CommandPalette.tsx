@@ -5,8 +5,11 @@ import {
   Mail,
   Briefcase,
   Trophy,
-  Code
+  Code,
+  Terminal,
+  Download
 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 import {
   CommandDialog,
@@ -16,7 +19,6 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from '@/components/ui/command';
 import { useRouter } from 'next/navigation';
 
@@ -41,11 +43,35 @@ export function CommandPalette() {
     command();
   }, []);
 
+  const downloadResume = async () => {
+    const supabase = createClient();
+    const { data } = await supabase.from('profile_settings').select('resume_file_url').single();
+    if (data?.resume_file_url) {
+      window.open(data.resume_file_url, '_blank');
+    } else {
+      alert('Resume not found or currently unavailable.');
+    }
+  };
+
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
+        
+        <CommandGroup heading="System & Overrides">
+          <CommandItem onSelect={() => runCommand(() => window.dispatchEvent(new Event('open-sudo-terminal')))}>
+            <Terminal className="mr-2 h-4 w-4 text-primary" />
+            <span className="text-primary font-bold">Initialize Root Override (Sudo Mode)</span>
+          </CommandItem>
+          <CommandItem onSelect={() => runCommand(downloadResume)}>
+            <Download className="mr-2 h-4 w-4 text-primary" />
+            <span className="text-primary font-bold">Decrypt & Download Resume</span>
+          </CommandItem>
+        </CommandGroup>
+        
+        <CommandSeparator />
+        
         <CommandGroup heading="Navigation">
           <CommandItem onSelect={() => runCommand(() => router.push('#projects'))}>
             <Briefcase className="mr-2 h-4 w-4" />
