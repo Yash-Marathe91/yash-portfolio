@@ -192,7 +192,7 @@ export default function ContactInbox() {
             >
               {/* Header */}
               <div className="p-6 border-b border-border-glass bg-surface-elevated shrink-0">
-                <div className="flex justify-between items-start gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                   <div className="flex flex-col gap-1">
                     <h2 className="text-xl font-heading text-foreground">{selectedMessage.subject || 'No Subject'}</h2>
                     <div className="flex items-center gap-2 text-sm text-on-surface-variant mt-2">

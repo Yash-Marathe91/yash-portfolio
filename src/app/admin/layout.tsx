@@ -83,7 +83,7 @@ export default function AdminLayout({
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0">
-        <header className="h-12 md:h-16 border-b border-border-glass bg-surface/50 backdrop-blur-md flex items-center px-4 md:px-8 sticky top-[114px] md:top-[80px] z-10 overflow-x-auto no-scrollbar">
+        <header className="h-12 md:h-16 border-b border-border-glass bg-surface/50 backdrop-blur-md flex items-center px-4 md:px-8 relative md:sticky md:top-[80px] z-10 overflow-x-auto no-scrollbar">
           <div className="flex items-center gap-2 text-technical-label text-on-surface-variant">
             <span>root</span>
             <span className="text-primary">@</span>
@@ -93,7 +93,7 @@ export default function AdminLayout({
           </div>
         </header>
         
-        <div className="p-8 flex-1 overflow-y-auto">
+        <div className="p-4 md:p-8 flex-1 overflow-y-auto">
           {children}
         </div>
       </main>

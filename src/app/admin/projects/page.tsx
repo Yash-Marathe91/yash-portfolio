@@ -209,7 +209,7 @@ export default function ProjectsManager() {
   return (
     <div className="max-w-6xl mx-auto flex flex-col gap-8">
       {/* Header */}
-      <div className="flex justify-between items-end">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-heading uppercase text-foreground flex items-center gap-3">
             <FolderKanban className="w-8 h-8 text-primary" />

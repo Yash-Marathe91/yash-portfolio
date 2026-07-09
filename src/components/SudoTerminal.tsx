@@ -45,6 +45,17 @@ export default function SudoTerminal() {
   }, [inputBuffer, isOpen]);
 
   useEffect(() => {
+    const handleCustomOpen = () => {
+      if (!isOpen) {
+        setIsOpen(true);
+        startBootSequence();
+      }
+    };
+    window.addEventListener('open-sudo-terminal', handleCustomOpen);
+    return () => window.removeEventListener('open-sudo-terminal', handleCustomOpen);
+  }, [isOpen]);
+
+  useEffect(() => {
     if (isOpen && !isBooting && !isProcessing) {
       inputRef.current?.focus();
     }

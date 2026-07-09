@@ -7,11 +7,11 @@ import { Menu, X } from 'lucide-react';
 import SystemStatusBadge from './SystemStatusBadge';
 
 const navItems = [
-  { name: 'HOME', href: '#home' },
-  { name: 'PROJECTS', href: '#projects' },
-  { name: 'SKILLS', href: '#skills' },
-  { name: 'ACHIEVEMENTS', href: '#achievements' },
-  { name: 'CONTACT', href: '#contact' },
+  { name: 'HOME', href: '#home', symbol: '~/' },
+  { name: 'PROJECTS', href: '#projects', symbol: './' },
+  { name: 'SKILLS', href: '#skills', symbol: '{}' },
+  { name: 'ACHIEVEMENTS', href: '#achievements', symbol: '[]' },
+  { name: 'CONTACT', href: '#contact', symbol: '->' },
 ];
 
 export default function Navbar() {
@@ -68,7 +68,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-surface/80 backdrop-blur-md border-b border-border-glass py-4' : 'bg-transparent py-4 md:py-6'}`}>
+    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-background/90 backdrop-blur-md border-b border-border-glass py-4' : 'max-md:bg-background max-md:border-b max-md:border-border-glass md:bg-transparent py-4 md:py-6'}`}>
       <div className="w-full mx-auto px-6 md:px-12 flex justify-between items-center relative">
         {/* Logo - Left */}
         <div className="flex-1 flex justify-start">
@@ -116,44 +116,79 @@ export default function Navbar() {
         <div className="lg:hidden flex justify-end z-50">
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="text-on-surface hover:text-primary transition-colors p-2"
+            className={`transition-colors p-2 rounded-lg ${mobileMenuOpen ? 'bg-primary/10 text-primary' : 'text-on-surface hover:text-primary'}`}
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            <motion.div
+              initial={false}
+              animate={{ rotate: mobileMenuOpen ? 90 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </motion.div>
           </button>
         </div>
       </div>
 
-      {/* Mobile Navigation Dropdown */}
+      {/* Mobile Navigation Dropdown - Right Aligned Tech Panel */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-full left-0 w-full bg-surface-elevated border-b border-border-glass shadow-xl lg:hidden flex flex-col px-6 py-4 gap-4"
+            initial={{ opacity: 0, scale: 0.8, y: -20, transformOrigin: "top right" }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: -20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute top-[calc(100%+10px)] right-4 w-44 bg-surface-elevated/90 backdrop-blur-2xl border border-primary/20 shadow-[0_0_40px_rgba(255,180,172,0.1)] rounded-xl lg:hidden flex flex-col overflow-hidden z-50 p-2"
           >
-            {navItems.map((item) => {
-              const isActive = activeSection === item.href.substring(1);
-              return (
+            <div className="flex flex-col gap-1">
+              {navItems.map((item, i) => {
+                const isActive = activeSection === item.href.substring(1);
+                return (
+                  <motion.div
+                    key={item.name}
+                    custom={i}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 + 0.05, duration: 0.4, ease: "easeOut" }}
+                  >
+                    <Link 
+                      href={item.href}
+                      onClick={(e) => handleClick(e, item.href)}
+                      className={`group relative overflow-hidden block px-3 py-3 rounded-lg text-xs font-mono uppercase tracking-widest transition-all ${isActive ? 'bg-primary/10 text-primary font-bold' : 'text-on-surface-variant hover:bg-surface-bright hover:text-primary'}`}
+                    >
+                      {isActive && (
+                        <motion.div 
+                          layoutId="active-mobile-indicator"
+                          className="absolute left-0 top-0 w-1 h-full bg-primary shadow-[0_0_10px_rgba(255,180,172,0.8)]"
+                        />
+                      )}
+                      <div className="flex items-center gap-2">
+                        <span className="text-primary/60 font-bold group-hover:text-primary transition-colors min-w-[20px]">
+                          {item.symbol}
+                        </span>
+                        <span className="truncate">{item.name}</span>
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+              
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: navItems.length * 0.05 + 0.1, duration: 0.4 }}
+                className="mt-1 pt-2 border-t border-border-glass"
+              >
                 <Link 
-                  key={item.name} 
-                  href={item.href}
-                  onClick={(e) => handleClick(e, item.href)}
-                  className={`text-sm font-mono uppercase tracking-wider py-2 border-b border-border-glass/50 ${isActive ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface'}`}
+                  href="/system-auth"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-between group rounded-lg border border-primary/30 px-3 py-2.5 text-[10px] bg-primary/5 hover:bg-primary/20 text-primary transition-all font-mono font-medium tracking-widest"
                 >
-                  {item.name}
+                  <span>SYS_ADMIN</span>
+                  <span className="opacity-0 group-hover:opacity-100 animate-pulse text-primary font-bold">_</span>
                 </Link>
-              );
-            })}
-            <Link 
-              href="/system-auth"
-              onClick={() => setMobileMenuOpen(false)}
-              className="mt-4 text-center border border-on-surface px-4 py-3 text-sm bg-surface hover:bg-surface/80 transition-colors font-mono font-medium"
-            >
-              ADMIN PORTAL
-            </Link>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
