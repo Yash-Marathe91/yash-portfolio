@@ -347,7 +347,7 @@ export default function AchievementsManager() {
       {/* List Grid */}
       {!isFormOpen && (
         <div className="flex flex-col gap-12">
-          {Object.entries(groupedAchievements).map(([type, items]) => (
+          {(Object.entries(groupedAchievements) as [string, any[]][]).map(([type, items]) => (
             <div key={type} className="flex flex-col gap-6">
               <div className="flex items-center border-b border-border-glass pb-2">
                 <h2 className="text-xl font-heading uppercase text-primary">
