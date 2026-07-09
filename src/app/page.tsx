@@ -6,6 +6,7 @@ import Reveal from '@/components/Reveal';
 import TrueFocus from '@/components/TrueFocus';
 import GlitchText from '@/components/GlitchText';
 import InteractiveSpotlightImage from '@/components/InteractiveSpotlightImage';
+import Certificates3DSlider from '@/components/Certificates3DSlider';
 import { ArrowRight, Terminal, LineChart, Code2, Target, Award, Zap, MonitorPlay, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -316,7 +317,7 @@ export default async function Home() {
           </div>
 
           <div className="flex flex-col gap-8">
-            {achievements.map((item) => (
+            {achievements.filter(a => ['Open Source', 'Internship'].includes(a.type)).map((item) => (
               <div key={item.id} className="flex flex-col md:flex-row justify-between items-start md:items-center p-8 border border-border-glass hover:bg-surface-elevated transition-colors gap-6">
                 <div className="flex flex-col gap-2">
                   <h3 className="text-2xl font-heading uppercase text-foreground">{item.title}</h3>
@@ -332,6 +333,17 @@ export default async function Home() {
             ))}
           </div>
         </Reveal>
+      </section>
+
+      {/* Certifications 3D Slider Section */}
+      <section id="certifications" className="w-full py-24 sm:py-32 bg-background border-b border-border-glass overflow-hidden">
+        <Reveal className="flex flex-col gap-8 max-w-7xl mx-auto px-4 sm:px-8 md:px-24">
+          <div className="flex items-baseline gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
+            <span className="text-primary-container font-mono text-lg sm:text-xl shrink-0">[04]</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl uppercase break-words hyphens-auto">Certifications & Awards</h2>
+          </div>
+        </Reveal>
+        <Certificates3DSlider certificates={achievements.filter(a => !['Open Source', 'Internship'].includes(a.type))} />
       </section>
 
       {/* Contact Section */}
