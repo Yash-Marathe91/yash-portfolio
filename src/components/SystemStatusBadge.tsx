@@ -22,7 +22,7 @@ export default function SystemStatusBadge() {
   };
 
   return (
-    <div className="flex items-center gap-2 border border-[#00ff00]/30 bg-[#00ff00]/5 px-3 py-1.5 rounded-sm font-mono text-xs text-[#00ff00] uppercase tracking-wider shadow-[0_0_10px_rgba(0,255,0,0.1)]">
+    <div className="flex items-center gap-2 border border-primary/30 bg-primary/5 px-3 py-1.5 rounded-sm font-mono text-xs text-primary uppercase tracking-wider shadow-[0_0_10px_currentColor] group hover:border-primary/50 hover:bg-primary/10 transition-colors cursor-default">
       <Activity className="w-3.5 h-3.5 animate-pulse" />
       <span className="hidden xl:inline">SYS_ON // UPTIME: {formatTime(uptime)}</span>
       <span className="xl:hidden">{formatTime(uptime)}</span>

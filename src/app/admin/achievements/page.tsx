@@ -230,6 +230,7 @@ export default function AchievementsManager() {
                   <option value="award">Award</option>
                   <option value="hackathon">Hackathon</option>
                   <option value="milestone">Milestone</option>
+                  <option value="internship">Internship</option>
                 </select>
               </div>
               <div className="flex flex-col gap-2">

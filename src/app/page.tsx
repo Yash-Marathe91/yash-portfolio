@@ -5,6 +5,7 @@ import ProjectGridClient from '@/components/ProjectGridClient';
 import Reveal from '@/components/Reveal';
 import TrueFocus from '@/components/TrueFocus';
 import GlitchText from '@/components/GlitchText';
+import InteractiveSpotlightImage from '@/components/InteractiveSpotlightImage';
 import { ArrowRight, Terminal, LineChart, Code2, Target, Award, Zap, MonitorPlay, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -114,7 +115,7 @@ export default async function Home() {
     issuer: a.issuer,
     date: a.issue_date ? new Date(a.issue_date).getFullYear().toString() : 'Present',
     description: a.description || '',
-    type: (a.type === 'milestone' ? 'Open Source' : a.type === 'hackathon' ? 'Hackathon' : 'Recognition') as any,
+    type: (a.type === 'internship' ? 'Internship' : a.type === 'milestone' ? 'Open Source' : a.type === 'hackathon' ? 'Hackathon' : 'Recognition') as any,
     image: a.image_url || '',
     url: a.credential_url || ''
   }));
@@ -242,30 +243,10 @@ export default async function Home() {
             </div>
 
             {/* Image Container */}
-            <div className="relative w-full flex-1 border-2 border-border-glass group-hover:border-primary/50 transition-colors duration-700 overflow-hidden bg-surface">
-              {/* Subtle Tech Grid */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:16px_16px] z-30 pointer-events-none group-hover:opacity-0 transition-opacity duration-700" />
-
-              {/* Default State: Luffy Wanted Poster */}
-              <Image
-                src="/luffy_OP_image.png"
-                alt="Luffy Wanted"
-                fill
-                className="object-cover object-top scale-[1.1] opacity-80 grayscale-[30%] sepia-[50%] group-hover:opacity-0 transition-opacity duration-700 ease-out z-20"
-                sizes="(max-width: 768px) 256px, (max-width: 1024px) 320px, 384px"
-                priority
-              />
-
-              {/* Hover State: True Identity (Yash in B&W) */}
-              <Image
-                src="/yash.png"
-                alt="Yash Marathe"
-                fill
-                className="object-cover object-top opacity-0 grayscale contrast-125 scale-95 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out z-10"
-                sizes="(max-width: 768px) 256px, (max-width: 1024px) 320px, 384px"
-                priority
-              />
-            </div>
+            <InteractiveSpotlightImage 
+              baseImage="/luffy_OP_image_cropped.png" 
+              revealImage="/yash-cropped.png" 
+            />
 
             {/* Bounty Footer */}
             <div className="text-center mt-3 lg:mt-4 w-full shrink-0">

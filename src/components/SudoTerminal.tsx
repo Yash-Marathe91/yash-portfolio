@@ -28,7 +28,7 @@ export default function SudoTerminal() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isOpen) return;
-      if (e.key.length === 1 && e.key.match(/[a-z0-9]/i)) {
+      if (e.key && e.key.length === 1 && e.key.match(/[a-z0-9]/i)) {
         const newBuffer = (inputBuffer + e.key).slice(-4).toLowerCase();
         setInputBuffer(newBuffer);
         

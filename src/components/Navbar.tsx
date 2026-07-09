@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import SystemStatusBadge from './SystemStatusBadge';
+import LogPose from './LogPose';
 
 const navItems = [
   { name: 'HOME', href: '#home', symbol: '~/' },
@@ -71,10 +72,13 @@ export default function Navbar() {
     <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-background/90 backdrop-blur-md border-b border-border-glass py-4' : 'max-md:bg-background max-md:border-b max-md:border-border-glass md:bg-transparent py-4 md:py-6'}`}>
       <div className="w-full mx-auto px-6 md:px-12 flex justify-between items-center relative">
         {/* Logo - Left */}
-        <div className="flex-1 flex justify-start">
+        <div className="flex-1 flex justify-start items-center gap-3 md:gap-5">
           <Link href="#home" onClick={(e) => handleClick(e, '#home')} className="text-xl md:text-2xl font-heading uppercase tracking-wider text-foreground whitespace-nowrap z-50">
             YASH MARATHE
           </Link>
+          <div className="hidden sm:block">
+            <LogPose activeIndex={navItems.findIndex(item => item.href.substring(1) === activeSection)} totalSections={navItems.length} />
+          </div>
         </div>
         
         {/* Navigation Links - Desktop Center */}
