@@ -7,6 +7,7 @@ import TrueFocus from '@/components/TrueFocus';
 import GlitchText from '@/components/GlitchText';
 import InteractiveSpotlightImage from '@/components/InteractiveSpotlightImage';
 import Certificates3DSlider from '@/components/Certificates3DSlider';
+import ExpandableMilestone from '@/components/ExpandableMilestone';
 import { ArrowRight, Terminal, LineChart, Code2, Target, Award, Zap, MonitorPlay, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -109,7 +110,11 @@ export default async function Home() {
   });
 
   // 4. Fetch Achievements
-  const { data: achievementsData } = await supabase.from('achievements').select('*').order('issue_date', { ascending: false });
+  const { data: achievementsData } = await supabase
+    .from('achievements')
+    .select('*')
+    .order('order_index', { ascending: true, nullsFirst: false })
+    .order('issue_date', { ascending: false });
   const achievements = (achievementsData || []).map(a => ({
     id: a.id,
     title: a.title,
@@ -318,18 +323,7 @@ export default async function Home() {
 
           <div className="flex flex-col gap-8">
             {achievements.filter(a => ['Open Source', 'Internship'].includes(a.type)).map((item) => (
-              <div key={item.id} className="flex flex-col md:flex-row justify-between items-start md:items-center p-8 border border-border-glass hover:bg-surface-elevated transition-colors gap-6">
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-2xl font-heading uppercase text-foreground">{item.title}</h3>
-                  <span className="text-technical-label text-primary">{item.issuer}</span>
-                </div>
-                <div className="flex flex-col gap-2 md:items-end">
-                  <span className="text-technical-code text-on-surface-variant">{item.date}</span>
-                  <span className="text-technical-label bg-surface-container px-3 py-1 border border-border-glass">
-                    {item.type}
-                  </span>
-                </div>
-              </div>
+              <ExpandableMilestone key={item.id} item={item as any} />
             ))}
           </div>
         </Reveal>

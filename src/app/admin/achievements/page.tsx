@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { Loader2, Plus, Trash2, Award, Save, Edit, ExternalLink, Image as ImageIcon } from 'lucide-react';
+import { Loader2, Plus, Trash2, Award, Save, Edit, ExternalLink, Image as ImageIcon, ArrowUp, ArrowDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function AchievementsManager() {
@@ -36,6 +36,7 @@ export default function AchievementsManager() {
       const { data, error } = await supabase
         .from('achievements')
         .select('*')
+        .order('order_index', { ascending: true, nullsFirst: false })
         .order('issue_date', { ascending: false });
 
       if (error) throw error;
@@ -144,6 +145,49 @@ export default function AchievementsManager() {
     setIsFormOpen(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const moveAchievement = async (type: string, index: number, direction: 'up' | 'down') => {
+    const group = achievements.filter(a => a.type === type);
+    if (direction === 'up' && index > 0) {
+      const temp = group[index];
+      group[index] = group[index - 1];
+      group[index - 1] = temp;
+    } else if (direction === 'down' && index < group.length - 1) {
+      const temp = group[index];
+      group[index] = group[index + 1];
+      group[index + 1] = temp;
+    } else {
+      return;
+    }
+
+    const updates = group.map((item, i) => ({
+      ...item,
+      order_index: i
+    }));
+
+    setAchievements(prev => {
+      const others = prev.filter(a => a.type !== type);
+      return [...others, ...updates].sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+    });
+
+    try {
+      const { error } = await supabase.from('achievements').upsert(
+         updates.map(({ id, order_index, title, issuer, type, issue_date, description, credential_url, image_url, is_featured }) => 
+         ({ id, order_index, title, issuer, type, issue_date, description, credential_url, image_url, is_featured }))
+      );
+      if (error) throw error;
+    } catch (e) {
+      console.error("Failed to reorder", e);
+      alert("Failed to save order. Make sure you have added the 'order_index' column in Supabase!");
+      fetchData();
+    }
+  };
+
+  const groupedAchievements = achievements.reduce((acc, curr) => {
+    if (!acc[curr.type]) acc[curr.type] = [];
+    acc[curr.type].push(curr);
+    return acc;
+  }, {} as Record<string, any[]>);
 
   if (isLoading) {
     return (
@@ -302,63 +346,89 @@ export default function AchievementsManager() {
 
       {/* List Grid */}
       {!isFormOpen && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {achievements.length === 0 ? (
+        <div className="flex flex-col gap-12">
+          {Object.entries(groupedAchievements).map(([type, items]) => (
+            <div key={type} className="flex flex-col gap-6">
+              <div className="flex items-center border-b border-border-glass pb-2">
+                <h2 className="text-xl font-heading uppercase text-primary">
+                  {type} <span className="text-sm font-mono text-on-surface-variant ml-2">({items.length})</span>
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {items.map((item, index) => (
+                  <motion.div 
+                    key={item.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="bg-surface border border-border-glass flex flex-col overflow-hidden relative"
+                  >
+                    <div className="absolute top-0 right-0 flex border-b border-l border-border-glass bg-surface-elevated z-10">
+                      <button 
+                        onClick={() => moveAchievement(type, index, 'up')}
+                        disabled={index === 0}
+                        className="p-1 hover:bg-primary/20 text-on-surface-variant hover:text-primary disabled:opacity-30 disabled:hover:bg-transparent transition-colors border-r border-border-glass"
+                        title="Move Up"
+                      >
+                        <ArrowUp className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => moveAchievement(type, index, 'down')}
+                        disabled={index === items.length - 1}
+                        className="p-1 hover:bg-primary/20 text-on-surface-variant hover:text-primary disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                        title="Move Down"
+                      >
+                        <ArrowDown className="w-4 h-4" />
+                      </button>
+                    </div>
+                    
+                    <div className="p-6 flex flex-col gap-4 flex-1 mt-6">
+                      <div className="flex items-start gap-4">
+                        {item.image_url ? (
+                          <img src={item.image_url} alt={item.title} className="w-12 h-12 object-contain bg-surface-elevated p-1 border border-border-glass rounded-sm" />
+                        ) : (
+                          <div className="w-12 h-12 flex items-center justify-center bg-surface-elevated border border-border-glass rounded-sm shrink-0">
+                            <Award className="w-6 h-6 text-on-surface-variant" />
+                          </div>
+                        )}
+                        <div>
+                          <h3 className="font-heading text-foreground">{item.title}</h3>
+                          <p className="text-xs font-mono text-primary uppercase mt-1">{item.issuer}</p>
+                        </div>
+                      </div>
+                      
+                      <p className="text-sm text-on-surface-variant line-clamp-3">{item.description}</p>
+                    </div>
+
+                    <div className="border-t border-border-glass p-3 flex justify-between items-center bg-surface-elevated/50 mt-auto">
+                      <div className="flex gap-2">
+                        {item.credential_url && (
+                          <a href={item.credential_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" title="View Credential">
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                      </div>
+                      <div className="flex gap-2 text-xs text-on-surface-variant items-center px-2 font-mono">
+                        {item.issue_date ? new Date(item.issue_date).getFullYear() : 'N/A'}
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={() => openEditForm(item)} className="text-on-surface-variant hover:text-primary transition-colors p-2" title="Edit">
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => handleDelete(item.id)} className="text-on-surface-variant hover:text-error transition-colors p-2" title="Delete">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          ))}
+          
+          {achievements.length === 0 && (
             <div className="col-span-full text-center p-12 border border-border-glass border-dashed text-on-surface-variant">
               No achievements logged yet. Click "Add New" to record one.
             </div>
-          ) : (
-            achievements.map(item => (
-              <motion.div 
-                key={item.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="bg-surface border border-border-glass flex flex-col overflow-hidden relative"
-              >
-                <div className="absolute top-0 right-0 bg-primary/10 text-primary border-b border-l border-border-glass px-3 py-1 text-[10px] uppercase font-mono tracking-widest">
-                  {item.type}
-                </div>
-                
-                <div className="p-6 flex flex-col gap-4 flex-1 mt-4">
-                  <div className="flex items-start gap-4">
-                    {item.image_url ? (
-                      <img src={item.image_url} alt={item.title} className="w-12 h-12 object-contain bg-surface-elevated p-1 border border-border-glass rounded-sm" />
-                    ) : (
-                      <div className="w-12 h-12 flex items-center justify-center bg-surface-elevated border border-border-glass rounded-sm">
-                        <Award className="w-6 h-6 text-on-surface-variant" />
-                      </div>
-                    )}
-                    <div>
-                      <h3 className="font-heading text-foreground">{item.title}</h3>
-                      <p className="text-xs font-mono text-primary uppercase mt-1">{item.issuer}</p>
-                    </div>
-                  </div>
-                  
-                  <p className="text-sm text-on-surface-variant line-clamp-3">{item.description}</p>
-                </div>
-
-                <div className="border-t border-border-glass p-3 flex justify-between items-center bg-surface-elevated/50">
-                  <div className="flex gap-2">
-                    {item.credential_url && (
-                      <a href={item.credential_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" title="View Credential">
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    )}
-                  </div>
-                  <div className="flex gap-2 text-xs text-on-surface-variant items-center px-2 font-mono">
-                    {item.issue_date ? new Date(item.issue_date).getFullYear() : 'N/A'}
-                  </div>
-                  <div className="flex gap-2">
-                    <button onClick={() => openEditForm(item)} className="text-on-surface-variant hover:text-primary transition-colors p-2" title="Edit">
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button onClick={() => handleDelete(item.id)} className="text-on-surface-variant hover:text-error transition-colors p-2" title="Delete">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            ))
           )}
         </div>
       )}
