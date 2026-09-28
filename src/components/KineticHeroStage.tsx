@@ -24,7 +24,9 @@ export default function KineticHeroStage({ children }: KineticHeroStageProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isMobileDevice, setIsMobileDevice] = useState(false);
 
-  // Mouse & Touch Parallax tracking
+  /**
+   * 3D Lerped Parallax Physics & Mouse/Touch Vector Tracking
+   */
   const mouseRef = useRef({ x: 0, y: 0 });
   const charPosRef = useRef({ x: 0, y: 0 });
   const petalsWindRef = useRef(0);
