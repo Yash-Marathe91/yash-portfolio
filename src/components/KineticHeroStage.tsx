@@ -124,7 +124,9 @@ export default function KineticHeroStage({ children }: KineticHeroStageProps) {
     return () => cancelAnimationFrame(animId);
   }, []);
 
-  // Floating embers & sakura petal canvas physics system
+  /**
+   * Floating Cyber Embers & Sakura Petal Canvas Physics Engine
+   */
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
