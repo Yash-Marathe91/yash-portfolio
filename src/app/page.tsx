@@ -1,11 +1,10 @@
-import HeroScene from '@/components/HeroScene';
 import ProjectCard from '@/components/ProjectCard';
 import ContactForm from '@/components/ContactForm';
 import ProjectGridClient from '@/components/ProjectGridClient';
 import Reveal from '@/components/Reveal';
 import TrueFocus from '@/components/TrueFocus';
 import GlitchText from '@/components/GlitchText';
-import InteractiveSpotlightImage from '@/components/InteractiveSpotlightImage';
+import KineticHeroStage from '@/components/KineticHeroStage';
 import Certificates3DSlider from '@/components/Certificates3DSlider';
 import ExpandableMilestone from '@/components/ExpandableMilestone';
 import { ArrowRight, Terminal, LineChart, Code2, Target, Award, Zap, MonitorPlay, GraduationCap } from 'lucide-react';
@@ -136,142 +135,101 @@ export default async function Home() {
       {/* Background Noise Texture */}
       <div className="fixed inset-0 z-[-1] opacity-[0.03] pointer-events-none bg-[url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;)]"></div>
 
-      {/* Hero Section */}
-      <section id="home" className="relative w-full min-h-screen flex flex-col justify-center items-start px-4 sm:px-8 md:px-24 border-b border-border-glass overflow-hidden pt-24 pb-12">
-        <HeroScene />
-        <div className="z-10 flex flex-col md:flex-row items-center md:items-start justify-between w-full max-w-7xl gap-12 md:gap-8">
-          {/* Left Content */}
-          <div className="flex flex-col max-w-4xl md:max-w-2xl lg:max-w-3xl flex-1 text-center md:text-left items-center md:items-start">
-            <div className="flex items-center gap-4 mb-6">
-              <span className="h-2 w-2 bg-primary-container rounded-full animate-pulse shrink-0"></span>
-              <span className="text-technical-label text-primary uppercase text-[10px] sm:text-xs">System Online // Identity Confirmed</span>
-            </div>
-            <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-7xl xl:text-8xl text-foreground mb-4 sm:mb-6 uppercase leading-tight w-full">
-              <GlitchText speed={1} enableShadows={true} enableOnHover={true}>
-                {fullName}
-              </GlitchText>
-            </h1>
-            <div className="text-xl sm:text-2xl md:text-2xl lg:text-4xl text-on-surface-variant font-sans tracking-wide">
-              <TrueFocus
-                sentence={heroTitle}
-                separator=" & "
-                manualMode={true}
-                blurAmount={4}
-                animationDuration={0.3}
-              />
-            </div>
-            <p className="mt-6 sm:mt-8 text-sm sm:text-base md:text-lg text-on-surface-variant max-w-2xl font-sans leading-relaxed">
-              {heroBio}
-            </p>
-            <div className="mt-12 flex flex-col md:flex-row gap-6 font-mono text-technical-code w-full sm:w-auto">
-              <Link
-                href="#projects"
-                className="magnetic group flex items-center justify-center gap-2 bg-primary-container text-on-primary-container px-8 py-4 uppercase hover:bg-primary transition-colors w-full md:w-auto text-center"
-              >
-                View Projects <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              {profile?.resume_file_url ? (
-                <a
-                  href={profile.resume_file_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="magnetic flex items-center justify-center gap-2 border border-border-glass text-on-surface px-8 py-4 uppercase hover:bg-surface-elevated transition-colors w-full md:w-auto text-center"
-                >
-                  <Terminal className="w-4 h-4" /> Download Resume
-                </a>
-              ) : (
-                <Link
-                  href="#contact"
-                  className="magnetic flex items-center justify-center gap-2 border border-border-glass text-on-surface px-8 py-4 uppercase hover:bg-surface-elevated transition-colors w-full md:w-auto text-center"
-                >
-                  <Terminal className="w-4 h-4" /> Initialize Contact
-                </Link>
-              )}
-            </div>
-
-            {/* Social Links */}
-            <div className="mt-8 flex flex-wrap items-center gap-4 sm:gap-6">
-              {profile?.github_url && (
-                <a href={profile.github_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2 -ml-2" aria-label="GitHub">
-                  <GithubIcon className="w-6 h-6 sm:w-7 sm:h-7" />
-                </a>
-              )}
-              {profile?.linkedin_url && (
-                <a href={profile.linkedin_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="LinkedIn">
-                  <LinkedinIcon className="w-6 h-6 sm:w-7 sm:h-7" />
-                </a>
-              )}
-              {profile?.twitter_url && (
-                <a href={profile.twitter_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Twitter">
-                  <TwitterIcon className="w-6 h-6 sm:w-7 sm:h-7" />
-                </a>
-              )}
-              <a href="https://leetcode.com/u/yash_still_exists/" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="LeetCode">
-                <LeetCodeIcon className="w-6 h-6 sm:w-7 sm:h-7" />
-              </a>
-              <a href="https://www.kaggle.com/yashrameshmarathe" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Kaggle">
-                <KaggleIcon className="w-7 h-7 sm:w-8 sm:h-8" />
-              </a>
-              <a href="https://discord.com/users/1090971198738931744" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Discord">
-                <DiscordIcon className="w-6 h-6 sm:w-7 sm:h-7" />
-              </a>
-              <a href="https://gssoc.girlscript.org/profile/6991c419-a093-44d4-a60f-4f1973437599" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2 flex items-center" aria-label="GSSoC">
-                <span className="font-mono text-sm sm:text-base font-bold tracking-widest uppercase">GSSOC</span>
-              </a>
-              <a href="https://unstop.com/u/yashmar82114" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Unstop">
-                <UnstopIcon className="w-6 h-6 sm:w-7 sm:h-7" />
-              </a>
-              <a href="https://www.credly.com/users/yash-marathe.5e44828f" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Credly">
-                <CredlyIcon className="w-7 h-7 sm:w-8 sm:h-8" />
-              </a>
-              <a href="https://hack2skill.com/dashboard/user_public_profile/?userId=698764761fc7dba7ab7d76d9&utm_source=hack2skill&utm_medium=homepage" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2 flex items-center" aria-label="Hack2Skill">
-                <span className="font-mono text-sm sm:text-base font-bold tracking-widest uppercase">HACK2SKILL</span>
-              </a>
-              <a href="https://devpost.com/yashmarathe4141?ref_content=user-portfolio&ref_feature=portfolio&ref_medium=global-nav" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Devpost">
-                <DevpostIcon className="w-6 h-6 sm:w-7 sm:h-7" />
-              </a>
-              <a href="https://learn.microsoft.com/en-us/users/YashMarathe-0997" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Microsoft Learn">
-                <MicrosoftIcon className="w-6 h-6 sm:w-7 sm:h-7" />
-              </a>
-            </div>
-          </div>
-
-          {/* Right Profile Image - Digital Wanted Poster */}
-          <div className="group relative w-64 h-80 sm:w-72 sm:h-96 md:w-72 md:h-[22rem] lg:w-[320px] lg:h-[460px] flex-shrink-0 mt-16 md:mt-0 order-last md:ml-auto p-3 lg:p-4 border-2 border-border-glass group-hover:border-primary/50 transition-colors duration-700 bg-surface-elevated/40 rounded-sm flex flex-col items-center shadow-2xl overflow-hidden">
-
-            {/* Glowing Backdrop */}
-            <div className="absolute inset-0 -z-10 bg-primary/5 rounded-none blur-2xl group-hover:bg-primary/20 transition-all duration-700 opacity-0 group-hover:opacity-100" />
-
-            {/* Wanted Header */}
-            <div className="text-center mb-2 lg:mb-3 w-full shrink-0">
-              <h3 className="font-serif text-4xl lg:text-5xl font-black tracking-[0.15em] text-on-surface-variant group-hover:text-primary transition-colors duration-700">WANTED</h3>
-              <p className="font-mono text-[8px] lg:text-[10px] font-bold tracking-[0.3em] text-on-surface-variant/70 mt-1">DEAD OR ALIVE</p>
-            </div>
-
-            {/* Image Container */}
-            <InteractiveSpotlightImage 
-              baseImage="/luffy_OP_image_cropped.png" 
-              revealImage="/yash-cropped.png" 
-            />
-
-            {/* Bounty Footer */}
-            <div className="text-center mt-3 lg:mt-4 w-full shrink-0">
-              <h4 className="font-serif text-lg lg:text-2xl font-bold tracking-[0.2em] text-on-surface-variant group-hover:text-on-surface transition-colors duration-700 uppercase">
-                YASH MARATHE
-              </h4>
-              <p className="font-serif text-lg lg:text-2xl font-black tracking-widest text-on-surface-variant group-hover:text-primary transition-colors duration-700 mt-1">
-                ฿ 3,000,000,000-
-              </p>
-            </div>
-
-            {/* Tech Rivets */}
-            <div className="absolute top-2 left-2 w-1.5 h-1.5 rounded-full border border-on-surface-variant/40" />
-            <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full border border-on-surface-variant/40" />
-            <div className="absolute bottom-2 left-2 w-1.5 h-1.5 rounded-full border border-on-surface-variant/40" />
-            <div className="absolute bottom-2 right-2 w-1.5 h-1.5 rounded-full border border-on-surface-variant/40" />
-          </div>
+      {/* Hero Section with Full Kinetic Anime/Cyberpunk Background Stage */}
+      <KineticHeroStage>
+        <div className="flex items-center gap-4 mb-6">
+          <span className="h-2 w-2 bg-primary-container rounded-full animate-pulse shrink-0"></span>
+          <span className="text-technical-label text-primary uppercase text-[10px] sm:text-xs">System Online // Identity Confirmed</span>
         </div>
-      </section>
+        <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-7xl xl:text-8xl text-foreground mb-4 sm:mb-6 uppercase leading-tight w-full">
+          <GlitchText speed={1} enableShadows={true} enableOnHover={true}>
+            {fullName}
+          </GlitchText>
+        </h1>
+        <div className="text-xl sm:text-2xl md:text-2xl lg:text-4xl text-on-surface-variant font-sans tracking-wide">
+          <TrueFocus
+            sentence={heroTitle}
+            separator=" & "
+            manualMode={true}
+            blurAmount={4}
+            animationDuration={0.3}
+          />
+        </div>
+        <p className="mt-6 sm:mt-8 text-sm sm:text-base md:text-lg text-on-surface-variant max-w-2xl font-sans leading-relaxed">
+          {heroBio}
+        </p>
+        <div className="mt-12 flex flex-col md:flex-row gap-6 font-mono text-technical-code w-full sm:w-auto">
+          <Link
+            href="#projects"
+            className="magnetic group flex items-center justify-center gap-2 bg-primary-container text-on-primary-container px-8 py-4 uppercase hover:bg-primary transition-colors w-full md:w-auto text-center"
+          >
+            View Projects <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
+          {profile?.resume_file_url ? (
+            <a
+              href={profile.resume_file_url}
+              target="_blank"
+              rel="noreferrer"
+              className="magnetic flex items-center justify-center gap-2 border border-border-glass text-on-surface px-8 py-4 uppercase hover:bg-surface-elevated transition-colors w-full md:w-auto text-center"
+            >
+              <Terminal className="w-4 h-4" /> Download Resume
+            </a>
+          ) : (
+            <Link
+              href="#contact"
+              className="magnetic flex items-center justify-center gap-2 border border-border-glass text-on-surface px-8 py-4 uppercase hover:bg-surface-elevated transition-colors w-full md:w-auto text-center"
+            >
+              <Terminal className="w-4 h-4" /> Initialize Contact
+            </Link>
+          )}
+        </div>
+
+        {/* Social Links */}
+        <div className="mt-8 flex flex-wrap items-center gap-4 sm:gap-6">
+          {profile?.github_url && (
+            <a href={profile.github_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2 -ml-2" aria-label="GitHub">
+              <GithubIcon className="w-6 h-6 sm:w-7 sm:h-7" />
+            </a>
+          )}
+          {profile?.linkedin_url && (
+            <a href={profile.linkedin_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="LinkedIn">
+              <LinkedinIcon className="w-6 h-6 sm:w-7 sm:h-7" />
+            </a>
+          )}
+          {profile?.twitter_url && (
+            <a href={profile.twitter_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Twitter">
+              <TwitterIcon className="w-6 h-6 sm:w-7 sm:h-7" />
+            </a>
+          )}
+          <a href="https://leetcode.com/u/yash_still_exists/" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="LeetCode">
+            <LeetCodeIcon className="w-6 h-6 sm:w-7 sm:h-7" />
+          </a>
+          <a href="https://www.kaggle.com/yashrameshmarathe" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Kaggle">
+            <KaggleIcon className="w-7 h-7 sm:w-8 sm:h-8" />
+          </a>
+          <a href="https://discord.com/users/1090971198738931744" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Discord">
+            <DiscordIcon className="w-6 h-6 sm:w-7 sm:h-7" />
+          </a>
+          <a href="https://gssoc.girlscript.org/profile/6991c419-a093-44d4-a60f-4f1973437599" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2 flex items-center" aria-label="GSSoC">
+            <span className="font-mono text-sm sm:text-base font-bold tracking-widest uppercase">GSSOC</span>
+          </a>
+          <a href="https://unstop.com/u/yashmar82114" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Unstop">
+            <UnstopIcon className="w-6 h-6 sm:w-7 sm:h-7" />
+          </a>
+          <a href="https://www.credly.com/users/yash-marathe.5e44828f" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Credly">
+            <CredlyIcon className="w-7 h-7 sm:w-8 sm:h-8" />
+          </a>
+          <a href="https://hack2skill.com/dashboard/user_public_profile/?userId=698764761fc7dba7ab7d76d9&utm_source=hack2skill&utm_medium=homepage" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2 flex items-center" aria-label="Hack2Skill">
+            <span className="font-mono text-sm sm:text-base font-bold tracking-widest uppercase">HACK2SKILL</span>
+          </a>
+          <a href="https://devpost.com/yashmarathe4141?ref_content=user-portfolio&ref_feature=portfolio&ref_medium=global-nav" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Devpost">
+            <DevpostIcon className="w-6 h-6 sm:w-7 sm:h-7" />
+          </a>
+          <a href="https://learn.microsoft.com/en-us/users/YashMarathe-0997" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Microsoft Learn">
+            <MicrosoftIcon className="w-6 h-6 sm:w-7 sm:h-7" />
+          </a>
+        </div>
+      </KineticHeroStage>
 
       {/* Projects Section */}
       <section id="projects" className="w-full py-24 sm:py-32 px-4 sm:px-8 md:px-24 border-b border-border-glass bg-surface">
