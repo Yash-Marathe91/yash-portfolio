@@ -12,7 +12,9 @@ export default function KineticHeroStage({ children }: KineticHeroStageProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const photoStageRef = useRef<HTMLDivElement | null>(null);
 
-  // Audio telemetry states
+  /**
+   * Audio Telemetry System State & Audio Element Reference
+   */
   const [isPlaying, setIsPlaying] = useState(false);
   const [progressPercent, setProgressPercent] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
