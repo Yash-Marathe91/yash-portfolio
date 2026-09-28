@@ -315,7 +315,7 @@ export default function KineticHeroStage({ children }: KineticHeroStageProps) {
             ref={charLayerRef}
             className="relative w-full h-full z-10 transition-transform duration-200 ease-out will-change-transform flex items-center justify-center group"
           >
-            {/* SVG Blob Photo Frame with Orbiting Technical Text */}
+            {/* SVG Organic Blob Photo Frame with Orbiting Technical Text & Extended ViewBox */}
             <svg
               viewBox="-20 -20 240 240"
               xmlns="http://www.w3.org/2000/svg"
