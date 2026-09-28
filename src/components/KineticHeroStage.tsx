@@ -45,7 +45,9 @@ export default function KineticHeroStage({ children }: KineticHeroStageProps) {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Scroll detection for mobile screen trigger (30% to 80% viewport height band)
+  /**
+   * Passive Scroll Detector for Mobile Screen Active Zone (30% to 80% Viewport Height)
+   */
   useEffect(() => {
     const handleScroll = () => {
       if (!photoStageRef.current) return;
